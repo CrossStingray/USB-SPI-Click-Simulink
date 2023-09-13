@@ -1,4 +1,6 @@
 #include <boost/interprocess/managed_shared_memory.hpp>
+//BOOST 1.83.0 is required, please install this library before compiling the code
+//Refer to https://www.boost.org/users/download/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
