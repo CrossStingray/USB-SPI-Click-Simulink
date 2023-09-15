@@ -28,6 +28,7 @@ void MCP2210::error_checker(int isOk) {
     if (isOk != 0) {
         std::cout << "ERROR: " << isOk << std::endl;
         Mcp2210_Close(handle);
+        std::cin.ignore();
         exit(-1);
     }
 }
