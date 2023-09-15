@@ -84,6 +84,8 @@ int Init_Accel(MCP2210& SPI_Click) {
     }
     else {
         std::cout << "Error con el DLL!\n" << std::endl;
+        std::cout << std::endl << "Presiona ENTER para salir" << std::endl;
+        std::cin.ignore();
         return -1;
     }
 
