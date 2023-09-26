@@ -1,6 +1,4 @@
 #include <boost/interprocess/managed_shared_memory.hpp>
-//BOOST 1.83.0 is required, please install this library before compiling the code
-//Refer to https://www.boost.org/users/download/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -22,13 +20,14 @@ public:
     void error_checker(int isOk);
     int spi_write(unsigned char reg, unsigned char tx);
     int spi_read(unsigned char reg, unsigned char* rx);
+    
+    ~MCP2210() { Mcp2210_Close(this->handle); }
 };
 
 void MCP2210::error_checker(int isOk) {
     if (isOk != 0) {
         std::cout << "ERROR: " << isOk << std::endl;
         Mcp2210_Close(handle);
-        std::cin.ignore();
         exit(-1);
     }
 }
@@ -85,8 +84,6 @@ int Init_Accel(MCP2210& SPI_Click) {
     }
     else {
         std::cout << "Error con el DLL!\n" << std::endl;
-        std::cout << std::endl << "Presiona ENTER para salir" << std::endl;
-        std::cin.ignore();
         return -1;
     }
 
@@ -206,18 +203,22 @@ int main()
 
     // Crea la instancia en la memoria
     managed_shared_memory segment(open_or_create, "AccelMemory", 1024);
-
+    
     // Aloja el espacio para los 7 valores del acelerometro
     int16_t* data = segment.find_or_construct<int16_t>("AccelData")[7]();
+
+    // Crea un bit de control para detener la aplicacion
+    bool* isSimulinkOpen = segment.find_or_construct<bool>("isSimulinkRunning")();
 
     std::cout << "Memoria compartida abierta exitosamente" << std::endl << std::endl;
     std::cout << "\t\t\t\tENVIANDO DATOS A SIMULINK" << std::endl;
 
-    printf("\nPress ESC key to exit!\n ---------------------------------------------------------------------------------------\n");
+    printf("\nPresiona ESC para salir!\n ---------------------------------------------------------------------------------------\n");
     Sleep(1000);
 
     bool is_ESC_Key_Pressed = false;
-    while (!is_ESC_Key_Pressed) {
+    *isSimulinkOpen = true;
+    while ( !is_ESC_Key_Pressed && *isSimulinkOpen ) {
 
         if (GetAsyncKeyState(VK_ESCAPE)) {
             is_ESC_Key_Pressed = true;
