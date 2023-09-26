@@ -26,7 +26,7 @@
  * | See matlabroot/simulink/src/sfuntmpl_doc.c for a more detailed template |
  *  -------------------------------------------------------------------------
  *
- * Created: Mon Sep 11 16:07:01 2023
+ * Created: Tue Sep 26 16:40:45 2023
  */
 
 #define S_FUNCTION_LEVEL               2
@@ -163,6 +163,7 @@
 /*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 #include "simstruc.h"
 
+extern void ReadAccel_Start_wrapper(SimStruct *S);
 extern void ReadAccel_Outputs_wrapper(real_T *y0,
   real_T *y1,
   real_T *y2,
@@ -170,6 +171,7 @@ extern void ReadAccel_Outputs_wrapper(real_T *y0,
   real_T *y4,
   real_T *y5,
   SimStruct *S);
+extern void ReadAccel_Terminate_wrapper(SimStruct *S);
 
 /*====================*
  * S-function methods *
@@ -300,6 +302,7 @@ static void mdlSetDefaultPortDataTypes(SimStruct *S)
  */
 static void mdlStart(SimStruct *S)
 {
+  ReadAccel_Start_wrapper(S);
 }
 
 #endif                                 /*  MDL_START */
@@ -326,6 +329,7 @@ static void mdlOutputs(SimStruct *S, int_T tid)
  */
 static void mdlTerminate(SimStruct *S)
 {
+  ReadAccel_Terminate_wrapper(S);
 }
 
 #ifdef MATLAB_MEX_FILE                 /* Is this file being compiled as a MEX-file? */

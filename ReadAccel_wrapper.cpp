@@ -9,6 +9,8 @@
 
 /* %%%-SFUNWIZ_wrapper_includes_Changes_BEGIN --- EDIT HERE TO _END */
 #include "boost/interprocess/managed_shared_memory.hpp"
+#include <windows.h>
+#include <stdlib.h>
 #include <string>
 #include <stdio.h>
 using namespace boost::interprocess;
@@ -28,6 +30,17 @@ using namespace boost::interprocess;
  
 /* %%%-SFUNWIZ_wrapper_externs_Changes_END --- EDIT HERE TO _BEGIN */
 
+/*
+ * Start function
+ *
+ */
+void ReadAccel_Start_wrapper(SimStruct *S)
+{
+/* %%%-SFUNWIZ_wrapper_Start_Changes_BEGIN --- EDIT HERE TO _END */
+// Inicia la aplicación minimizada
+    ShellExecute(NULL, NULL, "MCP2210_SHAREDMEM.exe", NULL, NULL, 2);
+/* %%%-SFUNWIZ_wrapper_Start_Changes_END --- EDIT HERE TO _BEGIN */
+}
 /*
  * Output function
  *
@@ -58,4 +71,18 @@ int16_t* data = segment.find<int16_t>("AccelData").first;
 /* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */
 }
 
+/*
+ * Terminate function
+ *
+ */
+void ReadAccel_Terminate_wrapper(SimStruct *S)
+{
+/* %%%-SFUNWIZ_wrapper_Terminate_Changes_BEGIN --- EDIT HERE TO _END */
+    managed_shared_memory segment(open_only, "AccelMemory");
+    bool* isSimulinkOpen = segment.find<bool>("isSimulinkRunning").first;
+    //Cierra la aplicacion externa
+    *isSimulinkOpen = false;
+
+/* %%%-SFUNWIZ_wrapper_Terminate_Changes_END --- EDIT HERE TO _BEGIN */
+}
 
